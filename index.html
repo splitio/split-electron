@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello Split!</title>
+
+    <script src="https://cdn.split.io/sdk/split-10.22.5.min.js"></script>
+
+    <script>
+      var factory = splitio({
+        core: {
+          authorizationKey: '<your split client-side api key>',
+          key: 'dmartin-electron-client' // unique identifier for your user
+        }
+      });
+
+      const client = factory.client();
+      client.on(client.Event.SDK_READY, function() {
+        console.log('client-side SDK_READY');
+      });
+
+      client.on(client.Event.SDK_UPDATE, function() {
+        console.log("SDK_UPDATE");
+        draw();
+      });
+      
+      function draw() {
+        const splitResult = client.getTreatmentWithConfig('multivariant_demo');
+        const configs = JSON.parse(splitResult.config);
+        document.getElementById("call-to-action").innerHTML = configs.text
+
+        let img = document.getElementById("banner-image")
+        img.src = configs.image
+        img.style.width = '50%'
+      }    
+    </script>    
+  </head>
+  <body>
+    <h1 id="call-to-action" class="cta">Call to Action</h1>
+    <div class="cta-image"><img id="banner-image"/></div>
+  </body>
+</html>
+
